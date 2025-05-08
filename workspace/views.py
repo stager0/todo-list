@@ -1,4 +1,7 @@
-from django.http import HttpResponseRedirect
+
+
+from django.http import HttpResponseRedirect, HttpRequest
+from django.urls import reverse, reverse_lazy
 from django.views import generic
 
 from workspace.forms import TagCreationForm, TagUpdateForm, TaskCreationForm, TaskUpdateForm
@@ -15,43 +18,43 @@ class TasksListView(generic.ListView):
         queryset = super().get_queryset()
         return queryset.order_by("status")
 
-    def post(self):
+    def post(self, request: HttpRequest, *args, **kwargs):
         action = self.request.POST.get("action")
 
         if action == "Done":
-            Task.objects.filter(pk=self.request.GET.get("pk")).update(status=True)
+            Task.objects.filter(pk=self.request.POST.get("pk")).update(status=True)
+
+        if action == "Undo":
+            Task.objects.filter(pk=self.request.POST.get("pk")).update(status=False)
 
         return HttpResponseRedirect(self.request.path)
+
+    def get_context_data(
+        self, *, object_list = ..., **kwargs
+    ):
+        context = super().get_context_data(**kwargs)
+        context["count_of_tasks"] = Task.objects.filter(status=False).count()
+        return context
 
 
 class TasksListCreateView(generic.CreateView):
     model = Task
     template_name = "workspace/task-create.html"
     form_class = TaskCreationForm
-
-
-class TaskListDetailView(generic.DetailView):
-    model = Task
-    template_name = "workspace/task-detail.html"
-
-    def get_queryset(self):
-        return Task.objects.filter(pk=self.request.GET.get("pk"))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["task"] = self.get_object()
-        return context
+    success_url = reverse_lazy("workspace:tasks-list")
 
 
 class TasksListUpdateView(generic.UpdateView):
     model = Task
     template_name = "workspace/task-update.html"
     form_class = TaskUpdateForm
+    success_url = reverse_lazy("workspace:tasks-list")
 
 
 class TasksListDeleteView(generic.DeleteView):
     model = Task
     template_name = "workspace/task-delete.html"
+    success_url = reverse_lazy("workspace:tasks-list")
 
 
 #--------------------------TAGS------------------
@@ -69,29 +72,18 @@ class TagsListCreate(generic.CreateView):
     model = Tag
     template_name = "workspace/tag-create.html"
     form_class = TagCreationForm
-
-
-class TagsListDetailView(generic.DetailView):
-    model = Tag
-    template_name = "workspace/tag-detail.html"
-    context_object_name = "tasks"
-
-    def get_queryset(self):
-        return Tag.objects.filter(pk=self.request.GET.get("pk"))
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["tag"] = self.get_object()
-        return context
+    success_url = reverse_lazy("workspace:tags-list")
 
 
 class TagsListUpdateView(generic.UpdateView):
     model = Tag
     template_name = "workspace/tag-update.html"
     form_class = TagUpdateForm
+    success_url = reverse_lazy("workspace:tags-list")
 
 
 class TagsListDeleteView(generic.DeleteView):
     model = Tag
     template_name = "workspace/tag-delete.html"
+    success_url = reverse_lazy("workspace:tags-list")
 
