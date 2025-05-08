@@ -8,6 +8,7 @@ class Tag(models.Model):
 
 
 class Task(models.Model):
+    name = models.CharField(max_length=125, null=True, blank=True)
     content = models.CharField(max_length=210, null=True, blank=True)
     deadline = models.DateField(null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
