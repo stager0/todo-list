@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.http import HttpResponseRedirect
 from django.views import generic
 
 from workspace.forms import TagCreationForm, TagUpdateForm, TaskCreationForm, TaskUpdateForm
@@ -14,6 +14,14 @@ class TasksListView(generic.ListView):
     def get_queryset(self):
         queryset = super().get_queryset()
         return queryset.order_by("status")
+
+    def post(self):
+        action = self.request.POST.get("action")
+
+        if action == "Done":
+            Task.objects.filter(pk=self.request.GET.get("pk")).update(status=True)
+
+        return HttpResponseRedirect(self.request.path)
 
 
 class TasksListCreateView(generic.CreateView):
@@ -44,11 +52,6 @@ class TasksListUpdateView(generic.UpdateView):
 class TasksListDeleteView(generic.DeleteView):
     model = Task
     template_name = "workspace/task-delete.html"
-
-
-class TaskIsDoneView(generic.View):
-    def save(self):
-        pass
 
 
 #--------------------------TAGS------------------
