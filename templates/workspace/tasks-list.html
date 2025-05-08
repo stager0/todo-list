@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>$Title$</title>
-</head>
-<body>
-$END$
-</body>
-</html>
+{% extends "base.html" %}
+{% block content %}
+  <h1 style="padding-top: 25px" class="mb-4">ToDo List <a class="btn btn-primary"
+                                                          href="{% url "workspace:task-create" %}">Create</a>
+  </h1>
+  <p>(count of active tasks: {{ count_of_tasks }})</p>
+  {% for task in tasks %}
+    <div class="col-md-6 mb-4">
+      <hr>
+      <h5 class="card-title">{{ task.content }} <p class="card-text">
+          <strong>
+            {% if task.status == False %}
+              <p style="color: red">Not Done</p>
+            {% else %}
+              <p style="color: green">The task is Done</p>
+            {% endif %}
+          </strong>
+        </p>
+      </h5>
+      <form method="post" action="">
+        {% csrf_token %}
+        <input type="hidden" name="pk" value="{{ task.id }}">
+        {% if task.status == False %}
+          <button class="btn btn-sm btn-success" type="submit" name="action" value="Done">
+            ✓ Mark as Completed
+          </button>
+        {% else %}
+          <button class="btn btn-sm btn-primary" type="submit" name="action" value="Undo">
+            Undo
+          </button>
+        {% endif %}
+
+      </form>
+      <p class="card-text">Created at: {{ task.created_at }}</p>
+      <p class="card-text">Deadline: {{ task.deadline }}</p>
+      <p class="card-text text-muted">Tags: {{ task.tag }} <a class="btn btn-success btn-sm"
+                                                              href="{% url 'workspace:task-update' task.id %}">Update</a>
+        <a class="btn btn-danger btn-sm" href="{% url 'workspace:task-delete' task.id %}">Delete</a></p>
+    </div>
+  {% empty %}
+    <p>Unfortunately you don't have any tasks :(</p>
+  {% endfor %}
+
+{% endblock %}
