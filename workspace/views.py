@@ -53,7 +53,7 @@ class TasksListUpdateView(generic.UpdateView):
 
 class TasksListDeleteView(generic.DeleteView):
     model = Task
-    template_name = "workspace/task-delete.html"
+    template_name = "workspace/task-confirm-delete.html"
     success_url = reverse_lazy("workspace:tasks-list")
 
 
@@ -84,6 +84,6 @@ class TagsListUpdateView(generic.UpdateView):
 
 class TagsListDeleteView(generic.DeleteView):
     model = Tag
-    template_name = "workspace/tag-delete.html"
+    template_name = "workspace/tag-confirm-delete.html"
     success_url = reverse_lazy("workspace:tags-list")
 
