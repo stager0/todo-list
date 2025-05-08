@@ -16,7 +16,7 @@ class TasksListView(generic.ListView):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        return queryset.order_by("status")
+        return queryset.order_by("status").order_by("created_at")
 
     def post(self, request: HttpRequest, *args, **kwargs):
         action = self.request.POST.get("action")
