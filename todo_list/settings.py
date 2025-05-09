@@ -9,7 +9,8 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-import os.path
+import os
+from dotenv import load_dotenv
 from pathlib import Path
 
 from django.conf.global_settings import STATICFILES_DIRS, STATIC_ROOT
@@ -17,13 +18,13 @@ from django.conf.global_settings import STATICFILES_DIRS, STATIC_ROOT
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv(os.path.join(BASE_DIR, ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+k6&fl@&hwoz6^f159_xe_5qzp)zw-3i#hw!d$j#l-*_0c3@0x'
-
+SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 

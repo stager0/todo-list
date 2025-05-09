@@ -38,17 +38,22 @@ source venv/bin/activate  # or venv\Scripts\activate on Windows
 pip install -r requirements.txt
 ```
 
-4. Run the migrations:
+4. Create .env file:
+```bash
+cp .env.example .env
+```
+
+5. Run the migrations:
 ```bash
 python manage.py migrate
 ```
 
-5. Start the development server:
+6. Start the development server:
 ```bash
 python manage.py runserver
 ```
 
-6. Open your browser and go to:
+7. Open your browser and go to:
 ```bash
 http://127.0.0.1:8000/
 ```
